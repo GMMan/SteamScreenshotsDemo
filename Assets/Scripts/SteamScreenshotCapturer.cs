@@ -12,6 +12,9 @@ public class SteamScreenshotCapturer : MonoBehaviour {
     // This is the canvas you want to toggle on/off. Change the type to
     // GameObject if you have something more complicated going on.
     public Canvas TargetCanvas;
+    // Maybe you don't always want to hide the canvas. Set this to false to not
+    // disable the canvas.
+    public bool HideCanvas = true;
 
 	// Use this for initialization
 	void OnEnable () {
@@ -46,7 +49,7 @@ public class SteamScreenshotCapturer : MonoBehaviour {
         // Just in case the callback's still firing even if we're disabled
         if (!enabled) yield break;
 
-        if (TargetCanvas != null) TargetCanvas.enabled = false; // Hide the canvas
+        if (TargetCanvas != null && HideCanvas) TargetCanvas.enabled = false; // Hide the canvas
         yield return new WaitForEndOfFrame(); // Wait for the entire frame to finish drawing
 
         // Create texture and load it with the current screen output
@@ -59,7 +62,7 @@ public class SteamScreenshotCapturer : MonoBehaviour {
         raw = VerticallyFlipRgb(raw, screenshot.width, screenshot.height);
         SteamScreenshots.WriteScreenshot(raw, (uint)raw.Length, screenshot.width, screenshot.height);
 
-        if (TargetCanvas != null) TargetCanvas.enabled = true; // Reenable the canvas
+        if (TargetCanvas != null && HideCanvas) TargetCanvas.enabled = true; // Reenable the canvas
     }
 
     static byte[] VerticallyFlipRgb(byte[] raw, int width, int height)
